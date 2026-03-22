@@ -1,0 +1,9 @@
+[submodule "telimani-api"]
+	path = backend
+	url = https://github.com/faldji/telimani-api.git
+[submodule "telimani-front"]
+	path = frontend
+	url = https://github.com/faldji/telimani-front.git
+[submodule "backend"]
+	path = backend
+	url = https://github.com/faldji/telimani-api.git

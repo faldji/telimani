@@ -1,0 +1,25 @@
+{
+  "name": "telimani",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "setup": "echo 'Telimani Setup' && echo 'Prerequisites: Node.js 18+, PostgreSQL 12+, Redis' && echo 'See README.md for detailed setup instructions'",
+    "backend:install": "cd backend && npm install",
+    "frontend:install": "cd frontend && npm install",
+    "backend:dev": "cd backend && npm run dev",
+    "frontend:dev": "cd frontend && npm start",
+    "backend:build": "cd backend && npm run build",
+    "frontend:build": "cd frontend && eas build --platform android",
+    "lint": "cd backend && npm run lint && cd ../frontend && npm run lint"
+  },
+  "description": "Telimani - Motorcycle Ride-Sharing App (Uber Clone)",
+  "keywords": [
+    "ride-sharing",
+    "motorcycle",
+    "mobile app",
+    "react-native",
+    "node.js"
+  ],
+  "author": "Telimani Team",
+  "license": "MIT"
+}
