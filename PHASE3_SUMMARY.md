@@ -1,3 +1,5 @@
+> Historical implementation reference — see root `README.md` for current project status.
+
 # Phase 3 Implementation Summary: Ride Booking & Payment Logic
 
 **Status:** ✅ COMPLETED

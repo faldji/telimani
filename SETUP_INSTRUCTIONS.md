@@ -1,162 +1,164 @@
-## Telimani Project Setup & Next Steps
+# Telimani — Setup Instructions
 
-Great! Your Telimani project structure is now fully scaffolded and ready for development. Here's what has been created:
+All 5 development phases are complete. Follow these steps to get the project running locally.
 
-### ✅ What's Been Set Up
+## Prerequisites
 
-1. **Project Structure**
-   - Backend directory with Node.js/Express boilerplate
-   - Frontend directory with React Native/Expo boilerplate
-   - Database migrations and configuration
-   - State management (Redux) setup
-   - API client and WebSocket client services
-
-2. **Configuration Files**
-   - TypeScript configs for both backend and frontend
-   - Environment templates (.env.example)
-   - ESLint, Prettier configs
-   - Database migration system (Knex.js)
-
-3. **Documentation**
-   - README.md files for each component
-   - Project guidelines in .github/copilot-instructions.md
-   - Setup instructions
-
-### ⚠️ Prerequisites - REQUIRED BEFORE CONTINUING
-
-Before you can install dependencies and run the project, you need:
-
-1. **Node.js 18+** - [Download from nodejs.org](https://nodejs.org/)
-   - Verify installation: `node --version` and `npm --version`
-
-2. **PostgreSQL 12+** - [Download](https://www.postgresql.org/download/)
-   - Verify installation: `psql --version`
-   - Start PostgreSQL service
-
-3. **Redis 6+** - [Download](https://redis.io/download)
-   - For Windows: Use WSL or Windows native build
-   - Verify: `redis-cli ping` should return `PONG`
-
-4. **Git** (if not already installed) - [Download](https://git-scm.com/)
-
-### 🚀 Next Steps
-
-#### Step 1: Install Node.js
-1. Go to https://nodejs.org/
-2. Download LTS version (18+)
-3. Install (keep all defaults)
-4. Restart your terminal/PowerShell after installation
-5. Verify: `node --version` and `npm --version`
-
-#### Step 2: Set Up PostgreSQL & Redis
-```powershell
-# Windows - Using chocolatey (if installed)
-choco install postgresql redis
-
-# Or download installers manually and run them
-```
-
-After installation:
-- PostgreSQL should create a default `postgres` user/password
-- Redis should be running as a service
-- Update `.env` files with your credentials
-
-#### Step 3: Install Project Dependencies
-
-```powershell
-# Navigate to project
-cd C:\Users\fadia\Projects\telimani
-
-# Install backend
-cd backend
-npm install
-npm run db:migrate
-
-# Install frontend
-cd ../frontend
-npm install
-```
-
-#### Step 4: Start Development Servers
-
-**Terminal 1 - Backend:**
-```powershell
-cd C:\Users\fadia\Projects\telimani\backend
-npm run dev
-# Server runs on http://localhost:5000
-```
-
-**Terminal 2 - Frontend:**
-```powershell
-cd C:\Users\fadia\Projects\telimani\frontend
-npm start
-# Scan QR code with Expo Go app on your phone
-```
-
-### 📚 Key File Locations
-
-**Backend:**
-- Entry point: `backend/src/index.ts`
-- Database migrations: `backend/migrations/`
-- API routes: `backend/src/routes/`
-- Services: `backend/src/services/`
-
-**Frontend:**
-- Entry point: `frontend/App.tsx`
-- Redux store: `frontend/src/redux/store.ts`
-- API client: `frontend/src/services/api.ts`
-- Socket.io client: `frontend/src/services/socket.ts`
-
-### 🔧 Configuration
-
-Before running, update environment files:
-
-**Backend** (`backend/.env`):
-```
-DATABASE_URL=postgresql://postgres:yourpassword@localhost:5432/telimani
-REDIS_URL=redis://localhost:6379
-JWT_SECRET=your-secret-key-here
-```
-
-**Frontend** (`frontend/.env`):
-```
-EXPO_PUBLIC_API_URL=http://localhost:5000
-EXPO_PUBLIC_SOCKET_URL=http://localhost:5000
-```
-
-### 📱 Running on Phone
-
-For front-end testing on a real device:
-
-1. Download Expo Go app on iOS (App Store) or Android (Google Play)
-2. After `npm start` in frontend directory, scan the QR code
-3. App loads on your phone - instant updates as you code!
-
-### 🐛 Troubleshooting
-
-**"npm: not found" after Node.js install**
-- Restart PowerShell completely
-- Try running from a new terminal window
-
-**Database connection errors**
-- Ensure PostgreSQL is running: Check Services (Windows) or `psql --version`
-- Verify credentials in .env files match your setup
-- Create database: `createdb telimani`
-
-**Redis connection errors**
-- Ensure Redis is running: `redis-cli ping`
-- Check REDIS_URL in backend/.env
-
-**Expo QR code not appearing**
-- Ensure backend is also running (even if you're just testing frontend)
-- Check firewall: localhost:5000 must be accessible
-
-### 📞 Support
-
-- For backend issues → check `backend/README.md`
-- For frontend issues → check `frontend/README.md`
-- For general questions → check `README.md` in project root
+| Tool | Version | Check |
+|---|---|---|
+| Node.js | 18+ | `node --version` |
+| npm | 9+ | `npm --version` |
+| PostgreSQL | 12+ | `psql --version` |
+| Redis | 6+ | `redis-cli ping` → `PONG` |
+| Git | any | `git --version` |
 
 ---
 
-**Once Node.js and PostgreSQL are installed, come back here to run the installation commands!**
+## Option A — Docker Compose (Recommended)
+
+Starts backend, PostgreSQL, and Redis automatically.
+
+```bash
+# From repo root:
+docker compose up --build
+
+# Once containers are healthy, run migrations:
+docker compose exec backend npm run db:migrate
+```
+
+Services:
+- **Backend API**: `http://localhost:5000`
+- **PostgreSQL**: `localhost:5432` (user: `postgres`, password: `password`, db: `telimani`)
+- **Redis**: `localhost:6379`
+
+Then start the frontend separately (Expo needs the local network):
+```bash
+cd frontend
+npm install
+# Create .env (see below)
+npx expo start
+```
+
+---
+
+## Option B — Manual Setup
+
+### 1. Backend
+
+```bash
+cd backend
+npm install
+cp .env.example .env
+# Edit .env — fill in DATABASE_URL, REDIS_URL, JWT_SECRET
+```
+
+Create the database and run migrations:
+```bash
+createdb telimani
+npm run db:migrate
+```
+
+Start dev server:
+```bash
+npm run dev         # Auto-reload via ts-node-dev
+# → http://localhost:5000
+```
+
+Verify:
+```bash
+curl http://localhost:5000/health
+# → {"status":"ok"}
+```
+
+### 2. Frontend
+
+```bash
+cd frontend
+npm install
+```
+
+Create a `.env` file in `frontend/`:
+```
+EXPO_PUBLIC_API_URL=http://<your-machine-ip>:5000
+EXPO_PUBLIC_SOCKET_URL=http://<your-machine-ip>:5000
+# Optional — enables Google Maps on native:
+EXPO_PUBLIC_GOOGLE_MAPS_API_KEY=your-key
+```
+
+> Use your LAN IP (e.g., `192.168.1.x`), not `localhost`, when testing on a real device.
+
+Start Expo:
+```bash
+npx expo start       # QR code in terminal — scan with Expo Go
+npx expo start -c    # Clear Metro cache if you hit bundling issues
+```
+
+Press `a` for Android emulator · `i` for iOS simulator · `w` for browser.
+
+---
+
+## Environment Reference
+
+### Backend (`backend/.env`)
+
+```
+NODE_ENV=development
+PORT=5000
+DATABASE_URL=postgresql://postgres:password@localhost:5432/telimani
+REDIS_URL=redis://localhost:6379
+JWT_SECRET=change-me
+JWT_EXPIRY=7d
+# Twilio (leave blank to use mock OTP — code is printed to console)
+TWILIO_ACCOUNT_SID=
+TWILIO_AUTH_TOKEN=
+TWILIO_PHONE_NUMBER=
+# PayPal Sandbox
+PAYPAL_MODE=sandbox
+PAYPAL_CLIENT_ID=
+PAYPAL_SECRET=
+```
+
+### Frontend (`frontend/.env`)
+
+```
+EXPO_PUBLIC_API_URL=http://localhost:5000
+EXPO_PUBLIC_SOCKET_URL=http://localhost:5000
+EXPO_PUBLIC_GOOGLE_MAPS_API_KEY=    # optional
+```
+
+---
+
+## Useful Commands
+
+### Backend
+```bash
+npm run dev          # Start with auto-reload
+npm run build        # Compile TypeScript → dist/
+npm start            # Run compiled output
+npm test             # Jest tests
+npm run db:migrate   # Apply Knex migrations
+npm run db:rollback  # Revert last migration batch
+npm run db:seed      # Load sample data
+```
+
+### Frontend
+```bash
+npx expo start           # Dev server
+npx expo start -c        # Clear cache
+npx tsc --noEmit         # TypeScript check (must be 0 errors)
+npx expo export --platform web   # Web static export
+npm run build:android    # EAS Android APK
+```
+
+---
+
+## Troubleshooting
+
+| Issue | Fix |
+|---|---|
+| `ECONNREFUSED` on backend startup | Ensure PostgreSQL + Redis are running |
+| OTP not received | Leave Twilio env blank — OTP is printed to the backend console |
+| App can't reach backend on phone | Use LAN IP in `.env`, not `localhost` |
+| Metro bundling error: `codegenNativeCommands` | Press `w` for web is handled by `RideMap.web.tsx`; native builds are fine |
+| `Attempted to navigate before mounting Root Layout` | Fixed in `app/_layout.tsx` — auth hydrates before rendering |
+| TypeScript errors | Run `npx tsc --noEmit`; should be 0 errors in both projects |

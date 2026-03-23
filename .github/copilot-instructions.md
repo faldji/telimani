@@ -1,7 +1,7 @@
 # Telimani Motorcycle Ride-Sharing App - AI Assistant Guidelines
 
 ## 🎯 Project Overview
-Telimani is a production-grade motorcycle ride-sharing platform (like Uber). **Status: Phase 4 Complete** with real-time Socket.io, 11+ screens, full auth + payments.
+Telimani is a production-grade motorcycle ride-sharing platform (like Uber). **Status: Phase 5 Complete** with expo-router navigation, real-time Socket.io, 11+ screens, full auth + payments.
 
 - **Frontend**: React Native + Expo, Redux state management, Socket.io real-time
 - **Backend**: Node.js/Express/TypeScript, 3-layer architecture (Routes → Controllers → Services)
@@ -35,7 +35,8 @@ npm run db:seed           # Populate test data (optional)
 
 ### Frontend Commands (`cd frontend`)
 ```bash
-npm start                 # Expo dev (web default, press 'a' for Android, 'i' for iOS)
+npx expo start            # Expo dev (web default, press 'a' for Android, 'i' for iOS)
+npx expo start -c         # Clear Metro cache
 npm run android           # Android emulator
 npm run ios               # iOS simulator
 npm run build:android     # EAS build Android APK
@@ -60,7 +61,7 @@ models/User.ts + Config/database.ts
 
 ### Frontend: React Component + Redux + Services
 ```
-screens/rider/BookRideScreen.tsx
+app/ride-tracking.tsx            ← expo-router screen file
   ↓ useAppDispatch(), dispatch thunks
 redux/slices/rideSlice.ts
   ↓ state management (availableRides[], currentRide)
@@ -70,6 +71,7 @@ services/socket-ride.ts
   ↓ Real-time events via Socket.io
 ```
 **Convention**: Redux for global state, Services for API/Socket calls, never direct API calls in components.
+**Navigation**: expo-router file-based routing (`app/` directory) — no React Navigation.
 
 ### Real-time Architecture (Socket.io)
 - **Server**: Namespaces at `src/sockets/{rideNamespace.ts, notificationNamespace.ts}`
@@ -83,14 +85,14 @@ services/socket-ride.ts
 
 | Purpose | Backend | Frontend |
 |---------|---------|----------|
-| Routes | `src/routes/*.ts` | `src/navigation/RootNavigator.tsx` |
+| Routes | `src/routes/*.ts` | `app/` (expo-router file-based) |
 | State | — | `src/redux/slices/*.ts` |
 | Models | `src/models/*.ts` | — |
 | Controllers | `src/controllers/*.ts` | — |
 | Business Logic | `src/services/*.ts` | `src/services/*.ts` |
 | Real-time | `src/sockets/*.ts` | `src/services/socket-*.ts` |
-| Components | — | `src/components/` + `src/screens/` |
-| Config/Env | `src/config/*.ts` | `services/api.ts` |
+| Components | — | `src/components/` |
+| Config/Env | `src/config/*.ts` | `src/services/api.ts` |
 
 ---
 
@@ -244,7 +246,7 @@ Key tables:
 ## 🧪 Testing Checklist (Before Deploy)
 
 - [ ] **Backend**: `npm run dev` starts, server listens on port 5000
-- [ ] **Frontend**: `npm start` launches Expo, shows login screen
+- [ ] **Frontend**: `npx expo start` launches Expo, shows login screen
 - [ ] **Database**: PostgreSQL running, migrations applied (`npm run db:migrate`)
 - [ ] **Redis**: Running on port 6379 (OTP storage, driver locations)
 - [ ] **Auth Flow**: Phone signup → OTP → JWT token works end-to-end
@@ -258,6 +260,25 @@ Key tables:
 ## 📚 Further Reading
 
 - Backend setup: See `backend/README.md`
+
+---
+
+## 🤖 Copilot Agent Usage Examples
+
+Use these prompts to interact with the AI assistant in this codebase:
+
+1. "Create a new API endpoint `/api/rides/:id/cancel` with validation, controller, service, route, tests, and docs based on current architecture."
+2. "Fix front-end `locationSlice` reducer so it correctly merges driver location updates without mutating state."
+3. "Add a new `notification` real-time event in `src/sockets/notificationNamespace.ts` and update frontend socket service and Redux slice."
+4. "Write Jest tests for `AuthService.sendOtp` and `AuthController.verifyOtp` with success and failure cases."
+
+## 🛠️ Next Agent-Customizations to Create
+
+- `/create-instruction backend-testing` — Add a dedicated instruction set for backend integration tests and local DB setup.
+- `/create-agent frontend-refactor` — Make an agent profile tuned for React Native UI/UX pattern changes and layout bug fixes.
+- `/create-prompt api-doc-generator` — Generate OpenAPI-style docs from existing logic and route patterns in the project.
+
+> Tip: Keep prompts concise and refer to file paths (e.g., `routes`, `services`, `redux/slices`) to get precise, actionable results.
 - Frontend setup: See `frontend/README.md`
 - Phase-specific details: Check `PHASE*_*.md` files for testing procedures
 - Architecture decisions: See `backend/tsconfig.json` (TypeScript target), `frontend/app.json` (Expo config)

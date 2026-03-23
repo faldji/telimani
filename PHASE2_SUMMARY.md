@@ -1,3 +1,5 @@
+> Historical implementation reference — see root `README.md` for current project status.
+
 # Phase 2 Implementation Summary: Backend Authentication & User Management
 
 ## ✅ Completed in Phase 2
