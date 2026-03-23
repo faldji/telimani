@@ -1,61 +1,68 @@
-# Telimani - Motorcycle Ride-Sharing Platform
+# Telimani — Motorcycle Ride-Sharing Platform
 
-A full-stack mobile app for motorcycle-based ride sharing, similar to Uber but optimized for motorcycle transport. Built with React Native (iOS/Android), Node.js/Express backend, PostgreSQL, and real-time Socket.io tracking.
+A production-grade full-stack mobile app for motorcycle ride sharing, similar to Uber. Built with React Native/Expo (iOS/Android/Web), Node.js/Express/TypeScript backend, PostgreSQL, Redis, and real-time Socket.io location tracking. **All 5 development phases are complete.**
 
 ## Project Structure
 
 ```
 telimani/
-├── backend/          # Node.js/Express API server
-├── frontend/         # React Native mobile app (Expo)
-└── .github/          # GitHub Actions & Copilot configs
+├── backend/          # Node.js/Express/TypeScript API server
+├── frontend/         # React Native/Expo app (iOS/Android/Web)
+├── docker-compose.yml
+└── .github/          # Copilot instructions & configs
 ```
 
 ## Quick Start
 
 ### Prerequisites
 - Node.js 18+
-- npm or yarn
-- PostgreSQL 12+ (for backend)
-- Redis (for backend real-time features)
-- Expo CLI (for frontend): `npm install -g expo-cli`
+- PostgreSQL 12+
+- Redis 6+
+- Docker + Docker Compose (optional, includes all services)
 
-### Backend Setup
+### Quickest Start — Docker Compose
+```bash
+docker compose up --build
+docker compose exec backend npm run db:migrate
+```
+- Backend: `http://localhost:5000`
+- Expo: `http://localhost:19000`
+- PostgreSQL: `localhost:5432` (postgres / password)
+- Redis: `localhost:6379`
+
+### Manual — Backend
 ```bash
 cd backend
 npm install
-cp .env.example .env
-npm run db:migrate    # Run database migrations
-npm run dev          # Start development server
+cp .env.example .env   # fill in DATABASE_URL, REDIS_URL, JWT_SECRET, etc.
+npm run db:migrate
+npm run dev            # http://localhost:5000 with auto-reload
 ```
 
-Backend runs on `http://localhost:5000`
-
-### Frontend Setup
+### Manual — Frontend
 ```bash
 cd frontend
 npm install
-cp .env.example .env
-npm start            # Start Expo dev server
+# Create .env with EXPO_PUBLIC_API_URL and EXPO_PUBLIC_SOCKET_URL
+npx expo start         # Scan QR with Expo Go on phone, or press 'a'/'w'
 ```
-
-Scan QR code with Expo Go app (iOS/Android) to run the app.
 
 ## Architecture Overview
 
-### Backend
-- **Express Server**: REST API + WebSocket (Socket.io)
-- **Authentication**: JWT + Phone OTP
-- **Database**: PostgreSQL for persistent data, Redis for real-time location caching
-- **Real-time**: Socket.io for location streaming and ride notifications
-- **Payment**: PayPal Sandbox integration
+### Backend (3-Layer: Routes → Controllers → Services)
+- **Express 4 / TypeScript**: REST API + WebSocket (Socket.io 4)
+- **Authentication**: JWT tokens + Phone OTP (stored in Redis, 5 min TTL)
+- **Database**: PostgreSQL via Knex.js migrations
+- **Cache/Real-time**: Redis for driver locations, OTP codes, pub-sub
+- **Payment**: PayPal Sandbox via `paypal-rest-sdk`
+- **Sockets**: `/rides` and `/notifications` Socket.io namespaces
 
-### Frontend
-- **React Native**: Cross-platform iOS/Android via Expo
-- **Navigation**: React Navigation (Auth, Rider, Driver stacks)
-- **State Management**: Redux Toolkit
-- **Real-time**: Socket.io client for live updates
-- **Maps**: react-native-maps for location visualization
+### Frontend (expo-router file-based navigation)
+- **React Native 0.81.5 / Expo SDK 54**: iOS · Android · Web
+- **Navigation**: expo-router 6 (`app/` directory, file-based)
+- **State Management**: Redux Toolkit 2 (6 slices)
+- **Real-time**: Socket.io client (socket-ride + socket-notifications services)
+- **Maps**: react-native-maps (native); web-safe placeholder on web
 
 ## MVP Features
 
@@ -169,38 +176,24 @@ Frontend app flow and components are documented in [frontend/README.md](./fronte
 
 ## Project Phases
 
-### Phase 1 ✅ Complete: Project Setup
-- ✅ Directory structure created
-- ✅ Environment templates ready
+### Phase 1 ✅ Complete: Project Scaffolding
+- Directory structure, TypeScript configs, environment templates, Docker Compose
 
-### Phase 2 🔄 In Progress: Backend Core
-- [ ] User authentication (signup, OTP, login)
-- [ ] Database schema for users, drivers, rides
-- [ ] API endpoints for core flows
+### Phase 2 ✅ Complete: Backend Auth & User Management
+- Phone OTP signup, JWT auth, user/driver models, 8 auth endpoints, Redis OTP storage
 
-### Phase 3: Ride & Payment Logic
-- [ ] Ride request and matching
-- [ ] Fare calculation
-- [ ] PayPal integration
+### Phase 3 ✅ Complete: Ride Booking & Payments
+- Ride lifecycle (request → accept → start → complete), fare calculation, PayPal sandbox, driver earnings
 
-### Phase 4: Real-Time Features
-- [ ] Socket.io location streaming
-- [ ] Ride notifications
-- [ ] Real-time matching
+### Phase 4 ✅ Complete: Real-Time Socket.io
+- `/rides` and `/notifications` namespaces, live driver location streaming, Redux real-time slices
 
-### Phase 5: Frontend Build
-- [ ] Auth screens
-- [ ] Rider home and booking flow
-- [ ] Driver mode and earnings
-- [ ] Real-time tracking UI
+### Phase 5 ✅ Complete: Frontend UI (expo-router)
+- Auth screens (Landing, Phone, OTP), role-aware home tab, ride tracking, notifications, profile, driver dashboard
+- Web bundle verified clean; Android bundled successfully
 
-### Phase 6: Integration & Testing
-- [ ] End-to-end testing
-- [ ] Device testing (Android/iOS)
-- [ ] Performance optimization
-
-### Phase 7: Deployment & Launch
-- [ ] Production deployment
+### Next: Integration Testing & Production Deployment
+- End-to-end test suite, production environment config, Play Store / App Store release
 - [ ] App Store submission
 - [ ] Post-launch monitoring
 

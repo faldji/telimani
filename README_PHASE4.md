@@ -1,5 +1,8 @@
 # ✅ Phase 4 Frontend: Real-time & Notifications - COMPLETE
 
+> **Note (Phase 5 update):** Navigation has since migrated to **expo-router** (`app/` directory).
+> Screen files live under `app/` and `src/components/`. Redux slices, Socket.io services, and all real-time logic documented here remain accurate.
+
 ## 🎯 Summary
 
 Phase 4 frontend implementation adds Socket.io integration, real-time ride tracking, and notification management to the Telimani application. All backend services created in the previous phase are now fully integrated with React/Redux on the frontend.

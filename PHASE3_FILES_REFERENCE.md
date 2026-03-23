@@ -1,3 +1,5 @@
+> Historical implementation reference — see root `README.md` for current project status.
+
 # Phase 3 Files Reference Guide
 
 Complete navigation map for Phase 3 implementation with file locations, purposes, and quick links.

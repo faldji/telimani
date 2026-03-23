@@ -1,3 +1,5 @@
+> Historical implementation reference — see root `README.md` for current project status.
+
 # Phase 2 Files Reference Guide
 
 ## Quick Navigation
