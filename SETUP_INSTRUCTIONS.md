@@ -14,9 +14,9 @@ All 5 development phases are complete. Follow these steps to get the project run
 
 ---
 
-## Option A — Docker Compose (Recommended)
+## Option A — Docker Compose (Backend Only)
 
-Starts backend, PostgreSQL, and Redis automatically.
+Starts backend, PostgreSQL, and Redis automatically. Frontend runs locally with Expo.
 
 ```bash
 # From repo root:
@@ -81,8 +81,6 @@ Create a `.env` file in `frontend/`:
 ```
 EXPO_PUBLIC_API_URL=http://<your-machine-ip>:5000
 EXPO_PUBLIC_SOCKET_URL=http://<your-machine-ip>:5000
-# Optional — enables Google Maps on native:
-EXPO_PUBLIC_GOOGLE_MAPS_API_KEY=your-key
 ```
 
 > Use your LAN IP (e.g., `192.168.1.x`), not `localhost`, when testing on a real device.
@@ -123,7 +121,6 @@ PAYPAL_SECRET=
 ```
 EXPO_PUBLIC_API_URL=http://localhost:5000
 EXPO_PUBLIC_SOCKET_URL=http://localhost:5000
-EXPO_PUBLIC_GOOGLE_MAPS_API_KEY=    # optional
 ```
 
 ---
@@ -135,10 +132,14 @@ EXPO_PUBLIC_GOOGLE_MAPS_API_KEY=    # optional
 npm run dev          # Start with auto-reload
 npm run build        # Compile TypeScript → dist/
 npm start            # Run compiled output
-npm test             # Jest tests
+npm test             # Jest tests (local)
+npm run test:docker  # Jest tests (Docker container)
+npm run build:docker # Build TypeScript in Docker
 npm run db:migrate   # Apply Knex migrations
 npm run db:rollback  # Revert last migration batch
 npm run db:seed      # Load sample data
+npm run db:migrate:docker   # Migrations in Docker
+npm run db:rollback:docker  # Rollback in Docker
 ```
 
 ### Frontend

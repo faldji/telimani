@@ -18,17 +18,23 @@ telimani/
 - Node.js 18+
 - PostgreSQL 12+
 - Redis 6+
-- Docker + Docker Compose (optional, includes all services)
+- Docker + Docker Compose (optional, backend infra only: API + Postgres + Redis)
 
-### Quickest Start — Docker Compose
+### Quickest Start — Docker Compose (Backend Only)
 ```bash
 docker compose up --build
 docker compose exec backend npm run db:migrate
 ```
 - Backend: `http://localhost:5000`
-- Expo: `http://localhost:19000`
 - PostgreSQL: `localhost:5432` (postgres / password)
 - Redis: `localhost:6379`
+
+Then run frontend locally:
+```bash
+cd frontend
+npm install
+npx expo start
+```
 
 ### Manual — Backend
 ```bash
@@ -62,7 +68,7 @@ npx expo start         # Scan QR with Expo Go on phone, or press 'a'/'w'
 - **Navigation**: expo-router 6 (`app/` directory, file-based)
 - **State Management**: Redux Toolkit 2 (6 slices)
 - **Real-time**: Socket.io client (socket-ride + socket-notifications services)
-- **Maps**: react-native-maps (native); web-safe placeholder on web
+- **Maps**: MapLibre + OpenStreetMap tiles, OSRM route polyline support
 
 ## MVP Features
 
@@ -94,31 +100,48 @@ npx expo start         # Scan QR with Expo Go on phone, or press 'a'/'w'
 ## Development
 
 ### Running Tests
+
+#### Backend Tests
 ```bash
-# Backend
+# Local development
 cd backend
 npm test              # Unit & integration tests
+npm run test:watch    # Watch mode for development
 
-# Frontend
+# Docker (recommended for CI/CD)
+npm run test:docker   # Run tests in isolated container
+```
+
+#### Frontend Tests
+```bash
 cd frontend
 npm test              # Component tests
 ```
 
 ### Database Migrations
 ```bash
+# Local development
 cd backend
 npm run db:migrate    # Run pending migrations
 npm run db:rollback   # Rollback last batch
 npm run db:seed       # Seed test data
+
+# Docker (when using docker-compose)
+npm run db:migrate:docker   # Run migrations in container
+npm run db:rollback:docker  # Rollback in container
 ```
 
 ### Build for Production
 
 **Backend Deployment:**
 ```bash
+# Local build
 cd backend
 npm run build
 npm start             # Runs compiled JavaScript
+
+# Docker build
+npm run build:docker  # Build TypeScript in container
 ```
 
 **Frontend Build:**
@@ -150,13 +173,16 @@ EXPO_PUBLIC_API_URL=http://localhost:5000
 EXPO_PUBLIC_SOCKET_URL=http://localhost:5000
 ```
 
-## API Documentation
+## Documentation
 
-Detailed API endpoints are documented in [backend/README.md](./backend/README.md).
+Use these as the canonical docs for each topic:
 
-## Mobile App Guide
-
-Frontend app flow and components are documented in [frontend/README.md](./frontend/README.md).
+- Setup and local environment: [SETUP_INSTRUCTIONS.md](./SETUP_INSTRUCTIONS.md)
+- Backend API, architecture, and runtime: [backend/README.md](./backend/README.md)
+- Frontend app structure and flows: [frontend/README.md](./frontend/README.md)
+- Backend testing: [backend/TESTING.md](./backend/TESTING.md)
+- Frontend testing: [frontend/TESTING.md](./frontend/TESTING.md)
+- Agent guidance for this repo: [.github/copilot-instructions.md](./.github/copilot-instructions.md)
 
 ## Deployment
 
@@ -190,6 +216,7 @@ Frontend app flow and components are documented in [frontend/README.md](./fronte
 
 ### Phase 5 ✅ Complete: Frontend UI (expo-router)
 - Auth screens (Landing, Phone, OTP), role-aware home tab, ride tracking, notifications, profile, driver dashboard
+- Map screen (`app/map.tsx`) with MapLibre/OpenStreetMap, route drawing, and real-time driver tracking via `ride:{rideId}` rooms
 - Web bundle verified clean; Android bundled successfully
 
 ### Next: Integration Testing & Production Deployment
@@ -208,10 +235,11 @@ TBD - License information will be added.
 ## Support
 
 For issues or questions:
-1. Check [backend/README.md](./backend/README.md) for backend-specific questions
-2. Check [frontend/README.md](./frontend/README.md) for frontend-specific questions
-3. Review project plan in `.github/copilot-instructions.md`
+1. Start with [SETUP_INSTRUCTIONS.md](./SETUP_INSTRUCTIONS.md) for local environment and startup issues
+2. Check [backend/README.md](./backend/README.md) for backend-specific questions and [backend/TESTING.md](./backend/TESTING.md) for backend verification steps
+3. Check [frontend/README.md](./frontend/README.md) for app-specific questions and [frontend/TESTING.md](./frontend/TESTING.md) for frontend verification steps
+4. Review [.github/copilot-instructions.md](./.github/copilot-instructions.md) for repo-specific agent guidance
 
 ---
 
-**Last Updated**: March 21, 2026
+**Last Updated**: March 25, 2026
